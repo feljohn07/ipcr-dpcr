@@ -1,0 +1,57 @@
+[02-Oct-2024 13:45:43 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user 'root'@'localhost' (using password: NO) in /home/u574655838/domains/asscatipcr.com/public_html/index.php:9
+Stack trace:
+#0 /home/u574655838/domains/asscatipcr.com/public_html/index.php(9): mysqli->__construct()
+#1 {main}
+  thrown in /home/u574655838/domains/asscatipcr.com/public_html/index.php on line 9
+[02-Oct-2024 13:48:37 UTC] PHP Warning:  Undefined variable $result in /home/u574655838/domains/asscatipcr.com/public_html/index.php on line 22
+[02-Oct-2024 13:48:37 UTC] PHP Warning:  Attempt to read property "num_rows" on null in /home/u574655838/domains/asscatipcr.com/public_html/index.php on line 22
+[02-Oct-2024 13:53:02 UTC] PHP Warning:  Undefined variable $result in /home/u574655838/domains/asscatipcr.com/public_html/index.php on line 22
+[02-Oct-2024 13:53:02 UTC] PHP Warning:  Attempt to read property "num_rows" on null in /home/u574655838/domains/asscatipcr.com/public_html/index.php on line 22
+[11-Oct-2024 12:02:30 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user 'root'@'localhost' (using password: NO) in /home/u574655838/domains/asscatipcr.com/public_html/dbconnections/config.php:9
+Stack trace:
+#0 /home/u574655838/domains/asscatipcr.com/public_html/dbconnections/config.php(9): mysqli->__construct()
+#1 /home/u574655838/domains/asscatipcr.com/public_html/index.php(9): include('/home/u57465583...')
+#2 {main}
+  thrown in /home/u574655838/domains/asscatipcr.com/public_html/dbconnections/config.php on line 9
+[11-Oct-2024 12:02:41 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user 'root'@'localhost' (using password: NO) in /home/u574655838/domains/asscatipcr.com/public_html/dbconnections/config.php:9
+Stack trace:
+#0 /home/u574655838/domains/asscatipcr.com/public_html/dbconnections/config.php(9): mysqli->__construct()
+#1 /home/u574655838/domains/asscatipcr.com/public_html/index.php(9): include('/home/u57465583...')
+#2 {main}
+  thrown in /home/u574655838/domains/asscatipcr.com/public_html/dbconnections/config.php on line 9
+[15-Oct-2024 14:38:15 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user 'root'@'localhost' (using password: NO) in /home/u574655838/domains/asscatipcr.com/public_html/dbconnections/config.php:9
+Stack trace:
+#0 /home/u574655838/domains/asscatipcr.com/public_html/dbconnections/config.php(9): mysqli->__construct()
+#1 /home/u574655838/domains/asscatipcr.com/public_html/index.php(9): include('/home/u57465583...')
+#2 {main}
+  thrown in /home/u574655838/domains/asscatipcr.com/public_html/dbconnections/config.php on line 9
+[15-Oct-2024 14:38:16 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user 'root'@'localhost' (using password: NO) in /home/u574655838/domains/asscatipcr.com/public_html/dbconnections/config.php:9
+Stack trace:
+#0 /home/u574655838/domains/asscatipcr.com/public_html/dbconnections/config.php(9): mysqli->__construct()
+#1 /home/u574655838/domains/asscatipcr.com/public_html/index.php(9): include('/home/u57465583...')
+#2 {main}
+  thrown in /home/u574655838/domains/asscatipcr.com/public_html/dbconnections/config.php on line 9
+[15-Oct-2024 14:38:42 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user 'root'@'localhost' (using password: NO) in /home/u574655838/domains/asscatipcr.com/public_html/dbconnections/config.php:9
+Stack trace:
+#0 /home/u574655838/domains/asscatipcr.com/public_html/dbconnections/config.php(9): mysqli->__construct()
+#1 /home/u574655838/domains/asscatipcr.com/public_html/index.php(9): include('/home/u57465583...')
+#2 {main}
+  thrown in /home/u574655838/domains/asscatipcr.com/public_html/dbconnections/config.php on line 9
+[15-Oct-2024 14:39:43 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user 'u574655838_config'@'localhost' (using password: YES) in /home/u574655838/domains/asscatipcr.com/public_html/dbconnections/config.php:9
+Stack trace:
+#0 /home/u574655838/domains/asscatipcr.com/public_html/dbconnections/config.php(9): mysqli->__construct()
+#1 /home/u574655838/domains/asscatipcr.com/public_html/index.php(9): include('/home/u57465583...')
+#2 {main}
+  thrown in /home/u574655838/domains/asscatipcr.com/public_html/dbconnections/config.php on line 9
+[26-Oct-2024 12:58:25 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user 'u574655838_latest'@'localhost' (using password: YES) in /home/u574655838/domains/asscatipcr.com/public_html/dbconnections/config.php:9
+Stack trace:
+#0 /home/u574655838/domains/asscatipcr.com/public_html/dbconnections/config.php(9): mysqli->__construct()
+#1 /home/u574655838/domains/asscatipcr.com/public_html/index.php(9): include('/home/u57465583...')
+#2 {main}
+  thrown in /home/u574655838/domains/asscatipcr.com/public_html/dbconnections/config.php on line 9
+[26-Oct-2024 12:58:28 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user 'u574655838_latest'@'localhost' (using password: YES) in /home/u574655838/domains/asscatipcr.com/public_html/dbconnections/config.php:9
+Stack trace:
+#0 /home/u574655838/domains/asscatipcr.com/public_html/dbconnections/config.php(9): mysqli->__construct()
+#1 /home/u574655838/domains/asscatipcr.com/public_html/index.php(9): include('/home/u57465583...')
+#2 {main}
+  thrown in /home/u574655838/domains/asscatipcr.com/public_html/dbconnections/config.php on line 9
