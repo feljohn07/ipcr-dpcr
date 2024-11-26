@@ -1203,14 +1203,8 @@ function openModal(taskId, taskType, semesterId, documentsReq, documentsReqByUse
                 document.getElementById('viewAssignedUsersContent').innerHTML = data;
                 document.getElementById('viewAssignedUsersModal').style.display = 'block';
                 
-               // Update the max and min properties for each element in the collection
-                const documentsRequiredElements = document.getElementsByClassName('withMaxValueInput');
-                for (let element of documentsRequiredElements) {
-                    element.max = documentsReq; // Set the max value
-                    element.min = 0;            // Set the min value
-                    console.log(element.max);   // Log the max value for each element
-                }
-
+                document.getElementsByClassName('documentsRequired').max = documentsReq;
+                console.log(document.getElementsByClassName('documentsRequired').max);
                 // Set the documents required information
                 document.getElementById('documentsRequired').textContent = documentsReq;
                 document.getElementById('documentsRequiredByUser ').textContent = documentsReqByUser ;

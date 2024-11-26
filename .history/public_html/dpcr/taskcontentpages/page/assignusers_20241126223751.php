@@ -1204,7 +1204,7 @@ function openModal(taskId, taskType, semesterId, documentsReq, documentsReqByUse
                 document.getElementById('viewAssignedUsersModal').style.display = 'block';
                 
                // Update the max and min properties for each element in the collection
-                const documentsRequiredElements = document.getElementsByClassName('withMaxValueInput');
+                const documentsRequiredElements = document.getElementsByClassName('documentsRequired');
                 for (let element of documentsRequiredElements) {
                     element.max = documentsReq; // Set the max value
                     element.min = 0;            // Set the min value

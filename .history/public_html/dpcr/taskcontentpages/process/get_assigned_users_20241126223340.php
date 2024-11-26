@@ -26,7 +26,7 @@ if ($result->num_rows > 0) {
     echo '<td>' . htmlspecialchars($row['lastname']) . '</td>';
     
     // Editable Target field with limits
-    echo '<td><input type="number" id="target_'.$row['id'].'" value="'.htmlspecialchars($row['target']).'" class="withMaxValueInput"  min=0 max=5  onkeydown="return false;" disabled></td>';
+    echo '<td><input type="number" id="target_'.$row['id'].'" value="'.htmlspecialchars($row['target']).'" class="documentsRequired"  disabled></td>';
     
     // Display the status
     echo '<td>' . htmlspecialchars($row['status']) . '</td>'; // Added status column
