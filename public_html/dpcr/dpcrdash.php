@@ -102,7 +102,7 @@ if (isset($_POST['logout'])) {
 
 <?php include '../notiftext/taskupdatenotif.php'; ?>
 
-<div class="header">My Web Base System</div>
+<div class="header">DCPR Dashboard</div>
 <div class="navbar">
     <!-- Your navigation buttons -->
      <button onclick="loadContent('../forall/profile.php')" class="nav-link">
