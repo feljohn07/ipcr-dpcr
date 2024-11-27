@@ -658,84 +658,81 @@ $conn->close();
                 </tr>
             </thead>
         <tbody>
-            <?php foreach ($strategic_tasks as $task): 
+        <?php 
+        // Initialize a variable to store the last task name
+            $lastTaskName = '';
+
+            for ($index = 0; $index < count($strategic_tasks); $index++): 
+                $task = $strategic_tasks[$index];
                 $progress = ($task['documents_req'] > 0) ? ($task['documents_uploaded'] / $task['documents_req']) * 100 : 0;
-            ?>
                 
-                <tr data-task-id="<?php echo htmlspecialchars($task['task_id']); ?>" data-task-type="strategic_tasks" style="border-bottom: 1px solid #ddd;">
-                <td> 
-                    <?php 
-                        // First remove any escape characters using stripslashes()
-                        $task_name = stripslashes($task['task_name']);
-                            
-                        // Replace <breakline> with <br> after removing slashes
-                        $task_name = str_replace('<break(+)line>', '<br>', $task_name);
-                            
-                        // Display the task name after replacing <breakline> with <br>
-                        echo $task_name; 
-                    ?>
-                </td>
-                <td>
-                    <?php 
-                        // First remove any escape characters using stripslashes()
-                        $description = stripslashes($task['description']);
-                            
-                        // Replace <breakline> with <br> after removing slashes
-                        $description = str_replace('<break(+)line>', '<br>', $description);
-                            
-                        // Display the description after replacing <breakline> with <br>
-                        echo $description; 
-                    ?>
-                </td>
-                <td><?php echo htmlspecialchars($task['documents_req']); ?></td>
-                <td style="white-space: nowrap; padding: 10px; text-align: left; height: 100px; overflow-y: auto; display: block;">
-                    <?php 
-                    // Split the owner string by <br> to get individual owners
-                    $owners = explode('<br>', $task['owner']);
-                    
-                    if (!empty($owners[0])) { // Check if there is at least one owner
-                        foreach ($owners as $owner) {
-                            // Split the owner string to get name and owner ID
-                            list($owner_name, $assignuser_id) = explode(',', $owner);
-                            
-                            // Display each owner's name
-                            echo htmlspecialchars($owner_name); 
-                            
-                            // Set the owner ID from the assignuser
-                            $owner_id = trim($assignuser_id); // Use the assignuser as the owner ID
-                            
-                            // Icon for viewing files
-                           // Inside the foreach loop for owners
-                           echo ' <i class="fas fa-file-alt view-file-icon" 
-                           data-task-id="' . $task['task_id'] . '" 
-                           data-owner-id="' . htmlspecialchars($owner_id) . '" 
-                           data-semester-id="' . $semester_id . '" 
-                           data-task-type="strategic" 
-                           data-owner-name="' . htmlspecialchars($owner_name) . '" 
-                           style="cursor:pointer;"></i><br>';
-                        }
+        ?>
+        <tr data-task-id="<?php echo htmlspecialchars($task['task_id']); ?>" data-task-type="strategic_tasks" style="border-bottom: 1px solid #ddd;">
+            <td> 
+                <?php 
+                        // Get and process the current task name
+                    $task_name = stripslashes($task['task_name']);
+                    $task_name = str_replace('<break(+)line>', '<br>', $task_name);
+
+                    // Check if the current task name is the same as the last one
+                    if ($task_name !== $lastTaskName) {
+                        echo $task_name; // Display the task name if it's not the same
                     } else {
-                        echo 'No owners assigned'; // Optional: Display a message when there are no owners
+                        echo ""; // Otherwise, display nothing
                     }
-                    ?>
-                </td>
-                <td style="padding: 10px; border: 1px solid #ddd;">
-                    <div class="circle">
-                        <svg width="60" height="60"> <!-- Further reduced size -->
-                            <circle class="circle-bg" cx="30" cy="30" r="25"></circle> <!-- Adjusted radius -->
-                            <circle class="circle-progress" cx="30" cy="30" r="25" style="stroke-dasharray: <?php echo ($progress / 100) * (2 * pi() * 25); ?>, 157.08;"></circle> <!-- Adjusted radius -->
-                        </svg>
-                        <div class="percentage"><?php echo round($progress); ?>%</div> <!-- Rounded to integer -->
-                    </div>
-                </td>
-                <td style="padding: 0; text-align: center;"><?php echo htmlspecialchars($task['quality']); ?></td>
-                <td style="padding: 0; text-align: center;"><?php echo htmlspecialchars($task['efficiency']); ?></td>
-                <td style="padding: 0; text-align: center;"><?php echo htmlspecialchars($task['timeliness']); ?></td>
-                <td style="padding: 0; text-align: center;"><?php echo htmlspecialchars($task['average']); ?></td>
-                <td style="padding: 10px; border: 1px solid #ddd;"><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
-                <td><?php echo htmlspecialchars(date('M/d/Y', strtotime($task['due_date']))); ?></td>
-            </tr>
-            <?php endforeach; ?>
+
+                    // Update the last task name
+                    $lastTaskName = $task_name;
+                ?>
+            </td>
+            <td>
+                <?php 
+                    $description = stripslashes($task['description']);
+                    $description = str_replace('<break(+)line>', '<br>', $description);
+                    echo $description; 
+                ?>
+            </td>
+            <td><?php echo htmlspecialchars($task['documents_req']); ?></td>
+            <td style="white-space: nowrap; padding: 10px; text-align: left; height: 100px; overflow-y: auto; display: block;">
+                <?php 
+                $owners = explode('<br>', $task['owner']);
+                
+                if (!empty($owners[0])) { 
+                    foreach ($owners as $owner) {
+                        list($owner_name, $assignuser_id) = explode(',', $owner);
+                        echo htmlspecialchars($owner_name);
+                        $owner_id = trim($assignuser_id);
+                        echo ' <i class="fas fa-file-alt view-file-icon" 
+                            data-task-id="' . $task['task_id'] . '" 
+                            data-owner-id="' . htmlspecialchars($owner_id) . '" 
+                            data-semester-id="' . $semester_id . '" 
+                            data-task-type="strategic" 
+                            data-owner-name="' . htmlspecialchars($owner_name) . '" 
+                            style="cursor:pointer;"></i><br>';
+                    }
+                } else {
+                    echo 'No owners assigned';
+                }
+                ?>
+            </td>
+            <td style="padding: 10px; border: 1px solid #ddd;">
+                <div class="circle">
+                    <svg width="60" height="60">
+                        <circle class="circle-bg" cx="30" cy="30" r="25"></circle>
+                        <circle class="circle-progress" cx="30" cy="30" r="25" style="stroke-dasharray: <?php echo ($progress / 100) * (2 * pi() * 25); ?>, 157.08;"></circle>
+                    </svg>
+                    <div class="percentage"><?php echo round($progress); ?>%</div>
+                </div>
+            </td>
+            <td style="padding: 0; text-align: center;"><?php echo htmlspecialchars($task['quality']); ?></td>
+            <td style="padding: 0; text-align: center;"><?php echo htmlspecialchars($task['efficiency']); ?></td>
+            <td style="padding: 0; text-align: center;"><?php echo htmlspecialchars($task['timeliness']); ?></td>
+            <td style="padding: 0; text-align: center;"><?php echo htmlspecialchars($task['average']); ?></td>
+            <td style="padding: 10px; border: 1px solid #ddd;"><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
+            <td><?php echo htmlspecialchars(date('M/d/Y', strtotime($task['due_date']))); ?></td>
+        </tr>
+        <?php endfor; ?>
+
         </tbody>
     </table>
 
@@ -760,83 +757,83 @@ $conn->close();
                 </tr>
             </thead>
         <tbody>
-            <?php foreach ($core_tasks as $task):
+        <?php 
+            // Initialize a variable to store the last task name
+            $lastTaskName = '';
+
+            // Loop through core tasks
+            foreach ($core_tasks as $task): 
                 $progress = ($task['documents_req'] > 0) ? ($task['documents_uploaded'] / $task['documents_req']) * 100 : 0;
-            ?>
-           <tr data-task-id="<?php echo htmlspecialchars($task['task_id']); ?>" data-task-type="core_tasks" style="border-bottom: 1px solid #ddd;">
-                <td> 
-                    <?php 
-                        // First remove any escape characters using stripslashes()
-                        $task_name = stripslashes($task['task_name']);
-                            
-                        // Replace <breakline> with <br> after removing slashes
-                        $task_name = str_replace('<break(+)line>', '<br>', $task_name);
-                            
-                        // Display the task name after replacing <breakline> with <br>
-                        echo $task_name; 
-                    ?>
-                </td>
-                <td>
-                    <?php 
-                        // First remove any escape characters using stripslashes()
-                        $description = stripslashes($task['description']);
-                            
-                        // Replace <breakline> with <br> after removing slashes
-                        $description = str_replace('<break(+)line>', '<br>', $description);
-                            
-                        // Display the description after replacing <breakline> with <br>
-                        echo $description; 
-                    ?>
-                </td>
-                <td><?php echo htmlspecialchars($task['documents_req']); ?></td>
-                <td style="white-space: nowrap; padding: 10px; text-align: left; height: 100px; overflow-y: auto; display: block;">
-                    <?php 
-                    // Split the owner string by <br> to get individual owners
-                    $owners = explode('<br>', $task['owner']);
-                    
-                    if (!empty($owners[0])) { // Check if there is at least one owner
-                        foreach ($owners as $owner) {
-                            // Split the owner string to get name and owner ID
-                            list($owner_name, $assignuser_id) = explode(',', $owner);
-                            
-                            // Display each owner's name
-                            echo htmlspecialchars($owner_name); 
-                            
-                            // Set the owner ID from the assignuser
-                            $owner_id = trim($assignuser_id); // Use the assignuser as the owner ID
-                            
-                            // Icon for viewing files
-                           // Inside the foreach loop for owners
-                           echo ' <i class="fas fa-file-alt view-file-icon" 
-                           data-task-id="' . $task['task_id'] . '" 
-                           data-owner-id="' . htmlspecialchars($owner_id) . '" 
-                           data-semester-id="' . $semester_id . '" 
-                           data-task-type="core" 
-                           data-owner-name="' . htmlspecialchars($owner_name) . '" 
-                           style="cursor:pointer;"></i><br>';
-                        }
+        ?>
+        <tr data-task-id="<?php echo htmlspecialchars($task['task_id']); ?>" data-task-type="core_tasks" style="border-bottom: 1px solid #ddd;">
+            <td>
+                <?php 
+                    // Process the current task name
+                    $task_name = stripslashes($task['task_name']);
+                    $task_name = str_replace('<break(+)line>', '<br>', $task_name);
+
+                    // Check if the current task name is different from the last one
+                    if ($task_name !== $lastTaskName) {
+                        echo $task_name; // Display the task name if it's not the same
                     } else {
-                        echo 'No owners assigned'; // Optional: Display a message when there are no owners
+                        echo ""; // Otherwise, display nothing
                     }
-                    ?>
-                </td>
-                <td style="padding: 10px; border: 1px solid #ddd;">
-                    <div class="circle">
-                        <svg width="60" height="60"> <!-- Further reduced size -->
-                            <circle class="circle-bg" cx="30" cy="30" r="25"></circle> <!-- Adjusted radius -->
-                            <circle class="circle-progress" cx="30" cy="30" r="25" style="stroke-dasharray: <?php echo ($progress / 100) * (2 * pi() * 25); ?>, 157.08;"></circle> <!-- Adjusted radius -->
-                        </svg>
-                        <div class="percentage"><?php echo round($progress); ?>%</div> <!-- Rounded to integer -->
-                    </div>
-                </td>
-                <td style="padding: 0; text-align: center;"><?php echo htmlspecialchars($task['quality']); ?></td>
-                <td style="padding: 0; text-align: center;"><?php echo htmlspecialchars($task['efficiency']); ?></td>
-                <td style="padding: 0; text-align: center;"><?php echo htmlspecialchars($task['timeliness']); ?></td>
-                <td style="padding: 0; text-align: center;"><?php echo htmlspecialchars($task['average']); ?></td>
-                <td style="padding: 10px; border: 1px solid #ddd;"><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
-                <td><?php echo htmlspecialchars(date('M/d/Y', strtotime($task['due_date']))); ?></td>
-            </tr>
-            <?php endforeach; ?>
+
+                    // Update the last task name
+                    $lastTaskName = $task_name;
+                ?>
+            </td>
+            <td>
+                <?php 
+                    // Process and display the description
+                    $description = stripslashes($task['description']);
+                    $description = str_replace('<break(+)line>', '<br>', $description);
+                    echo $description; 
+                ?>
+            </td>
+            <td><?php echo htmlspecialchars($task['documents_req']); ?></td>
+            <td style="white-space: nowrap; padding: 10px; text-align: left; height: 100px; overflow-y: auto; display: block;">
+                <?php 
+                $owners = explode('<br>', $task['owner']);
+
+                if (!empty($owners[0])) {
+                    foreach ($owners as $owner) {
+                        list($owner_name, $assignuser_id) = explode(',', $owner);
+                        echo htmlspecialchars($owner_name);
+
+                        $owner_id = trim($assignuser_id);
+
+                        echo ' <i class="fas fa-file-alt view-file-icon" 
+                        data-task-id="' . $task['task_id'] . '" 
+                        data-owner-id="' . htmlspecialchars($owner_id) . '" 
+                        data-semester-id="' . $semester_id . '" 
+                        data-task-type="core" 
+                        data-owner-name="' . htmlspecialchars($owner_name) . '" 
+                        style="cursor:pointer;"></i><br>';
+                    }
+                } else {
+                    echo 'No owners assigned';
+                }
+                ?>
+            </td>
+            <td style="padding: 10px; border: 1px solid #ddd;">
+                <div class="circle">
+                    <svg width="60" height="60">
+                        <circle class="circle-bg" cx="30" cy="30" r="25"></circle>
+                        <circle class="circle-progress" cx="30" cy="30" r="25" style="stroke-dasharray: <?php echo ($progress / 100) * (2 * pi() * 25); ?>, 157.08;"></circle>
+                    </svg>
+                    <div class="percentage"><?php echo round($progress); ?>%</div>
+                </div>
+            </td>
+            <td style="padding: 0; text-align: center;"><?php echo htmlspecialchars($task['quality']); ?></td>
+            <td style="padding: 0; text-align: center;"><?php echo htmlspecialchars($task['efficiency']); ?></td>
+            <td style="padding: 0; text-align: center;"><?php echo htmlspecialchars($task['timeliness']); ?></td>
+            <td style="padding: 0; text-align: center;"><?php echo htmlspecialchars($task['average']); ?></td>
+            <td style="padding: 10px; border: 1px solid #ddd;"><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
+            <td><?php echo htmlspecialchars(date('M/d/Y', strtotime($task['due_date']))); ?></td>
+        </tr>
+        <?php endforeach; ?>
+
         </tbody>
         </table>
 
@@ -861,53 +858,52 @@ $conn->close();
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($support_tasks as $task):  
+            <?php 
+                // Initialize a variable to store the last task name for support tasks
+                $lastTaskName = '';
+
+                // Loop through support tasks
+                foreach ($support_tasks as $task):  
                     $progress = ($task['documents_req'] > 0) ? ($task['documents_uploaded'] / $task['documents_req']) * 100 : 0;
-                ?>
-               <tr data-task-id="<?php echo htmlspecialchars($task['task_id']); ?>" data-task-type="support_tasks" style="border-bottom: 1px solid #ddd;">
-                <td> 
+            ?>
+            <tr data-task-id="<?php echo htmlspecialchars($task['task_id']); ?>" data-task-type="support_tasks" style="border-bottom: 1px solid #ddd;">
+                <td>
                     <?php 
-                        // First remove any escape characters using stripslashes()
+                        // Process the current task name
                         $task_name = stripslashes($task['task_name']);
-                            
-                        // Replace <breakline> with <br> after removing slashes
                         $task_name = str_replace('<break(+)line>', '<br>', $task_name);
-                            
-                        // Display the task name after replacing <breakline> with <br>
-                        echo $task_name; 
+
+                        // Check if the current task name is different from the last one
+                        if ($task_name !== $lastTaskName) {
+                            echo $task_name; // Display the task name if it's not the same
+                        } else {
+                            echo ""; // Otherwise, display nothing
+                        }
+
+                        // Update the last task name
+                        $lastTaskName = $task_name;
                     ?>
                 </td>
                 <td>
                     <?php 
-                        // First remove any escape characters using stripslashes()
+                        // Process and display the description
                         $description = stripslashes($task['description']);
-                            
-                        // Replace <breakline> with <br> after removing slashes
                         $description = str_replace('<break(+)line>', '<br>', $description);
-                            
-                        // Display the description after replacing <breakline> with <br>
                         echo $description; 
                     ?>
                 </td>
-                    <td><?php echo htmlspecialchars($task['documents_req']); ?></td>
-                    <td style="white-space: nowrap; padding: 10px; text-align: left; height: 100px; overflow-y: auto; display: block;">
-                        <?php 
-                        // Split the owner string by <br> to get individual owners
-                        $owners = explode('<br>', $task['owner']);
-                        
-                        if (!empty($owners[0])) { // Check if there is at least one owner
-                            foreach ($owners as $owner) {
-                                // Split the owner string to get name and owner ID
-                                list($owner_name, $assignuser_id) = explode(',', $owner);
-                                
-                                // Display each owner's name
-                                echo htmlspecialchars($owner_name); 
-                                
-                                // Set the owner ID from the assignuser
-                                $owner_id = trim($assignuser_id); // Use the assignuser as the owner ID
-                                
-                                // Icon for viewing files
-                            // Inside the foreach loop for owners
+                <td><?php echo htmlspecialchars($task['documents_req']); ?></td>
+                <td style="white-space: nowrap; padding: 10px; text-align: left; height: 100px; overflow-y: auto; display: block;">
+                    <?php 
+                    $owners = explode('<br>', $task['owner']);
+
+                    if (!empty($owners[0])) {
+                        foreach ($owners as $owner) {
+                            list($owner_name, $assignuser_id) = explode(',', $owner);
+                            echo htmlspecialchars($owner_name);
+
+                            $owner_id = trim($assignuser_id);
+
                             echo ' <i class="fas fa-file-alt view-file-icon" 
                             data-task-id="' . $task['task_id'] . '" 
                             data-owner-id="' . htmlspecialchars($owner_id) . '" 
@@ -915,30 +911,30 @@ $conn->close();
                             data-task-type="support" 
                             data-owner-name="' . htmlspecialchars($owner_name) . '" 
                             style="cursor:pointer;"></i><br>';
-                            }
-                        } else {
-                            echo 'No owners assigned'; // Optional: Display a message when there are no owners
                         }
-                        ?>
-                    </td>
-                  
-                    <td style="padding: 10px; border: 1px solid #ddd;">
+                    } else {
+                        echo 'No owners assigned';
+                    }
+                    ?>
+                </td>
+                <td style="padding: 10px; border: 1px solid #ddd;">
                     <div class="circle">
-                        <svg width="60" height="60"> <!-- Further reduced size -->
-                            <circle class="circle-bg" cx="30" cy="30" r="25"></circle> <!-- Adjusted radius -->
-                            <circle class="circle-progress" cx="30" cy="30" r="25" style="stroke-dasharray: <?php echo ($progress / 100) * (2 * pi() * 25); ?>, 157.08;"></circle> <!-- Adjusted radius -->
+                        <svg width="60" height="60">
+                            <circle class="circle-bg" cx="30" cy="30" r="25"></circle>
+                            <circle class="circle-progress" cx="30" cy="30" r="25" style="stroke-dasharray: <?php echo ($progress / 100) * (2 * pi() * 25); ?>, 157.08;"></circle>
                         </svg>
-                        <div class="percentage"><?php echo round($progress); ?>%</div> <!-- Rounded to integer -->
+                        <div class="percentage"><?php echo round($progress); ?>%</div>
                     </div>
                 </td>
-                    <td style="padding: 0; text-align: center;"><?php echo htmlspecialchars($task['quality']); ?></td>
-                    <td style="padding: 0; text-align: center;"><?php echo htmlspecialchars($task['efficiency']); ?></td>
-                    <td style="padding: 0; text-align: center;"><?php echo htmlspecialchars($task['timeliness']); ?></td>
-                    <td style="padding: 0; text-align: center;"><?php echo htmlspecialchars($task['average']); ?></td>
-                    <td style="padding: 10px; border: 1px solid #ddd;"><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
-                    <td><?php echo htmlspecialchars(date('M/d/Y', strtotime($task['due_date']))); ?></td>
-                </tr>
-                <?php endforeach; ?>
+                <td style="padding: 0; text-align: center;"><?php echo htmlspecialchars($task['quality']); ?></td>
+                <td style="padding: 0; text-align: center;"><?php echo htmlspecialchars($task['efficiency']); ?></td>
+                <td style="padding: 0; text-align: center;"><?php echo htmlspecialchars($task['timeliness']); ?></td>
+                <td style="padding: 0; text-align: center;"><?php echo htmlspecialchars($task['average']); ?></td>
+                <td style="padding: 10px; border: 1px solid #ddd;"><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
+                <td><?php echo htmlspecialchars(date('M/d/Y', strtotime($task['due_date']))); ?></td>
+            </tr>
+            <?php endforeach; ?>
+
             </tbody>
         </table>
     </div>
