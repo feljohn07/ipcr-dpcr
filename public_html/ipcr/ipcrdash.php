@@ -187,7 +187,7 @@ html, body {
 </head>
 
 <body>
-<div class="header">IPCR Dash</div>
+<div class="header">IPCR Dashboard</div>
 <div class="navbar">
     <button onclick="loadContent('../forall/profile.php')" class="nav-link">
         <img src="../iconswhite/profile.svg" alt="Profile icon">
