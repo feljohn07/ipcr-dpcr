@@ -35,7 +35,8 @@ function sendEmail($recipientEmail, $userId)
     $email = urlencode($recipientEmail); // URL-encode the email to ensure it's safe
     $token = bin2hex(random_bytes(16)); // Generate a random token for security
 
-    $verification_link = "http://localhost/asscatipcr.com/public_html/feature_experiment/email_verification/public/verification_link.php?user_id=$userId&email=$email&token=$token";
+    $verification_link = "https://aliceblue-mosquito-125906.hostingersite.com/public_html/feature_experiment/email_verification/public/verification_link.php?user_id=$userId&email=$email&token=$token";
+    // $verification_link = "http://localhost/asscatipcr.com/public_html/feature_experiment/email_verification/public/verification_link.php?user_id=$userId&email=$email&token=$token";
 
     $body = "Thank you for signing up! Please confirm your email address by clicking this Link : <a href=\"$verification_link\"> Verify Email</a>";
 
