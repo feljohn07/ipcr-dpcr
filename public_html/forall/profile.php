@@ -536,7 +536,7 @@ if ($role === 'Office Head') {
                 <div style="height: 24px;" ><p id="notification-email">Enter Email</p></div>
             </div>
             <div>
-                <input id='edit-email' type="button" onclick="toggleEmailInput()" value="Edit">
+                <input id='edit-email' type="button" onclick="toggleEmailInput()" value="Edit Email">
                 <input id='validate-email' type="submit" value="Verify Email" disabled>
             </div>
 
@@ -573,10 +573,10 @@ if ($role === 'Office Head') {
 
         }
 
-        if (editButton.value == 'Edit') {
+        if (editButton.value == 'Edit Email') {
             editButton.value = 'Cancel';
         } else {
-            editButton.value = 'Edit';
+            editButton.value = 'Edit Email';
         }
     }
 
