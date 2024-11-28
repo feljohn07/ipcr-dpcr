@@ -533,7 +533,7 @@ if ($role === 'Office Head') {
                 <!-- Hidden field -->
                 <input type="hidden" id="idnumber" name="idnumber" value="<?php echo $idnumber ?>">
 
-                <p id="notification-email"></p>
+                <div style="height: 24px;" ><p id="notification-email">Enter Email</p></div>
             </div>
             <div>
                 <input id='edit-email' type="button" onclick="toggleEmailInput()" value="Edit">
@@ -573,7 +573,7 @@ if ($role === 'Office Head') {
 
         }
 
-        if(editButton.value == 'Edit') {
+        if (editButton.value == 'Edit') {
             editButton.value = 'Cancel';
         } else {
             editButton.value = 'Edit';
@@ -593,7 +593,7 @@ if ($role === 'Office Head') {
         // Set a new timer to run the function after a delay
         debounceTimer = setTimeout(function() {
             validateEmail();
-        }, 1000); // 1000 ms (1 second) delay
+        }, 3); // 1000 ms (1 second) delay
     }
 
     // Function to simulate an email validation (or call an API, etc.)
@@ -606,6 +606,10 @@ if ($role === 'Office Head') {
 
         // Hide the loading spinner after the validation is complete
         document.getElementById('loading-spinner').style.display = 'none';
+        
+        if(email == ''){
+            return;
+        }
 
         if (emailRegex.test(email)) {
             showNotification('Valid email!', true);
@@ -621,19 +625,20 @@ if ($role === 'Office Head') {
                     method: 'POST',
                     body: formData
                 })
-                .then(response => response.text())
+                .then(response => response.json())
                 .then(data => {
                     // Show a message based on PHP's response
-                    console.log(data);
+                    // console.log(data);
 
-                    // if email used, you cannot verify.
-                    if (data == 'Email Used.') {
-                        showNotification('valid email format, but ' + data, false);
-                    } else {
+                    if (data.status === 'error') {
+                        console.log(data.message); // 'Email Used.
+                        showNotification(data.message, false);
+
+                        document.getElementById('validate-email').setAttribute('disabled', 'true');
                         
-                        if ("<?php echo $gmail ?>" == email) return;
+                    } else if (data.status === 'success') {
 
-                        showNotification('Valid email! and ' + data, true);
+                        showNotification('Valid email! and ' + data.message, true);
                         document.getElementById('validate-email').removeAttribute('disabled');
                     }
                 })
@@ -840,7 +845,7 @@ if ($role === 'Office Head') {
         var role = '<?php echo $role; ?>'; // Get the role from PHP
         var designationField = document.getElementById('designation');
         var positionField = document.getElementById('position');
-        var gmailField = document.getElementById('gmail');
+        // var gmailField = document.getElementById('gmail');
         var phoneField = document.getElementById('phone');
 
         // Hide the phone field for all roles
@@ -850,15 +855,15 @@ if ($role === 'Office Head') {
         if (role === 'Office Head') {
             designationField.parentElement.style.display = 'block'; // Hide designation field
             positionField.parentElement.style.display = 'none'; // Hide position field
-            gmailField.parentElement.style.display = 'block'; // Show email field
+            // gmailField.parentElement.style.display = 'block'; // Show email field
         } else if (role === 'College President' || role === 'VPAAQA') {
             designationField.parentElement.style.display = 'none'; // Hide designation field
             positionField.parentElement.style.display = 'none'; // Hide position field
-            gmailField.parentElement.style.display = 'block'; // Show email field
+            // gmailField.parentElement.style.display = 'block'; // Show email field
         } else {
             designationField.parentElement.style.display = 'block'; // Show designation field
             positionField.parentElement.style.display = 'block'; // Show position field
-            gmailField.parentElement.style.display = 'block'; // Show email field
+            // gmailField.parentElement.style.display = 'block'; // Show email field
         }
     }
 

@@ -15,21 +15,21 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['email'])) {
     global $conn; // Make sure $conn is available inside the function
 
     // Check if the email already exists in the database (excluding the current user's email)
-    $countQuery = "SELECT COUNT(*) FROM usersinfo WHERE gmail=? AND idnumber != ?";
+    $countQuery = "SELECT COUNT(*) FROM usersinfo WHERE gmail=?";
 
     if ($stmt = $conn->prepare($countQuery)) {
-        $stmt->bind_param("si", $email, $idnumber); // Bind the email and idnumber (as an integer)
+        $stmt->bind_param("s", $email); // Bind the email and idnumber (as an integer)
         $stmt->execute();
         $stmt->bind_result($emailCount);
         $stmt->fetch();
         $stmt->close();
 
         // If email already exists for another account, show the message
-        if ($emailCount > 0) {
-            echo 'Email Used.';
+        if ($emailCount >= 1) {
+            echo json_encode(['status' => 'error', 'message' => 'Email Used.']);
             return; // Stop further execution if the email exists for another account
         } else {
-            echo 'Email not used.';
+            echo json_encode(['status' => 'success', 'message' => 'Email not used.']);
         }
 
     } else {
