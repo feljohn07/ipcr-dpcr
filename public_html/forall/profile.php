@@ -49,8 +49,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $gmail = isset($_POST['gmail']) ? htmlspecialchars($_POST['gmail']) : '';
     $gender = isset($_POST['gender']) ? htmlspecialchars($_POST['gender']) : '';
     $phone = isset($_POST['phone']) ? htmlspecialchars($_POST['phone']) : '';
-    $designation = isset($_POST['designation']) ? htmlspecialchars($_POST['designation']) : '';
+    // $designation = isset($_POST['designation']) ? htmlspecialchars($_POST['designation']) : '';
     $position = isset($_POST['position']) ? htmlspecialchars($_POST['position']) : ''; // New field
+
+    if (!empty($_POST['designations'])) {
+        // Convert array to comma-separated string
+        $designations = implode('|', $_POST['designations']);
+        // Save $designation to the database
+        
+    }
 
     // File upload handling for profile picture
     if (isset($_FILES['profile_picture']) && $_FILES['profile_picture']['error'] == UPLOAD_ERR_OK) {
@@ -70,7 +77,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Update other profile information
     $sqlUpdateInfo = "UPDATE usersinfo SET prefix=?, firstname=?, lastname=?, middlename=?, suffix=?, gender=?, phone=?, designation=?, position=? WHERE idnumber=?";
     if ($stmt = $conn->prepare($sqlUpdateInfo)) {
-        $stmt->bind_param("ssssssssss", $prefix, $firstname, $lastname, $middlename, $suffix, $gender, $phone, $designation, $position, $idnumber);
+        $stmt->bind_param("ssssssssss", $prefix, $firstname, $lastname, $middlename, $suffix, $gender, $phone, $designations, $position, $idnumber);
         if ($stmt->execute()) {
             echo "Record updated successfully";
             // Update session variables
@@ -82,7 +89,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // $_SESSION['gmail'] = $gmail;
             $_SESSION['gender'] = $gender;
             $_SESSION['phone'] = $phone;
-            $_SESSION['designation'] = $designation;
+            $_SESSION['designation'] = $designations;
             $_SESSION['position'] = $position; // Update session variable
         } else {
             echo "Error updating record: " . $stmt->error;
@@ -117,6 +124,18 @@ if ($result = $conn->query($sqlGetDesignations)) {
 } else {
     echo "Error fetching designations: " . $conn->error;
 }
+
+// // Fetch user designations
+// $sqlGetDesignations = "SELECT designation FROM usersinfo WHERE `usersinfo`.`idnumber` = '$idnumber'";
+
+// if ($result = $conn->query($sqlGetDesignations)) {
+//     while ($row = $result->fetch_assoc()) {
+//         $designation = $row['designation'];
+//     }
+//     $result->free();
+// } else {
+//     echo "Error fetching designations: " . $conn->error;
+// }
 
 ?>
 <?php
@@ -417,8 +436,8 @@ if ($role === 'Office Head') {
             <input type="text" name="role" id="role" placeholder="Role" value="<?php echo $role; ?>" readonly>
         </div>
 
-        <div class="input-group">
-            <a>Designation </a>
+        <!-- <div class="input-group">
+            <a>Designations </a>
             <input type="text" name="designation_text" id="designation_text" placeholder="Designation" value="<?php echo htmlspecialchars($designation); ?>" readonly>
             <select name="designation" id="designation" style="display: none;" disabled>
                 <option value='' class="parent-option" disabled style="background-color: #d3d3d3;" <?php echo ($designation == '' || $designation === null) ? 'selected' : ''; ?>>Select Designation</option>
@@ -426,7 +445,80 @@ if ($role === 'Office Head') {
                     <option value="<?php echo htmlspecialchars($desg); ?>" <?php echo $designation == $desg ? 'selected' : ''; ?>><?php echo htmlspecialchars($desg); ?></option>
                 <?php endforeach; ?>
             </select>
+        </div> -->
+        
+        <div id="edit-designation-field" class="input-group" style="position: relative; font-family: Arial, sans-serif; display: none;"> 
+            <a>Designations</a>
+            <div style="border: 1px solid #ccc; border-radius: 4px; position: relative; cursor: pointer;">
+                <div style="padding: 10px; background-color: #f9f9f9; display: flex; justify-content: space-between; align-items: center;" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'block' ? 'none' : 'block';">
+                    Select Designations
+                    <span style="font-size: 12px;">&#9662;</span>
+                </div>
+                <div style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid #ccc; max-height: 200px; overflow-y: auto; z-index: 1000;">
+                    <?php 
+                        // Convert string into an array
+                        $selectedDesignations = explode('|', $designation); 
+                        foreach ($designations as $desg): 
+                    ?>
+                        <label 
+                            style="
+                                display: flex; 
+                                align-items: center; 
+                                padding: 8px 12px; 
+                                margin: 0; 
+                                cursor: pointer; 
+                                border: 1px solid #ddd; 
+                                border-radius: 4px; 
+                                background-color: #f9f9f9; 
+                                transition: background-color 0.3s, box-shadow 0.3s; 
+                            "
+                            onmouseover="this.style.backgroundColor='#eef'; this.style.boxShadow='0 0 8px rgba(0, 0, 0, 0.1)';"
+                            onmouseout="this.style.backgroundColor='#f9f9f9'; this.style.boxShadow='none';"
+                        >
+                            <input 
+                                type="checkbox" 
+                                name="designations[]" 
+                                value="<?php echo htmlspecialchars($desg); ?>" 
+                                <?php echo in_array($desg, $selectedDesignations) ? 'checked' : ''; ?> 
+                                style="margin-right: 10px; width: 16px; height: 16px; accent-color: #007BFF;"
+                            >
+                            <span style="font-size: 14px; color: #333;">
+                                <?php echo htmlspecialchars($desg); ?>
+                            </span>
+                        </label>
+
+
+                    <?php endforeach; ?>
+                </div>
+            </div>
         </div>
+
+        <div id="view-designation-field" class="input-group" style="font-family: Arial, sans-serif;">
+            <a style="font-size: 16px; margin-bottom: 10px; display: block;">Designation</a>
+            <div style="display: flex; flex-wrap: wrap; gap: 10px; padding: 10px; background-color: #f9f9f9; border: 1px solid #ddd; border-radius: 6px;">
+                <?php 
+                    // Convert string into an array for display
+                    $selectedDesignations = explode('|', $designation); 
+                    foreach ($selectedDesignations as $desg): 
+                ?>
+                    <div style="
+                        padding: 8px 12px; 
+                        border: 1px solid #ccc; 
+                        border-radius: 4px; 
+                        background-color: #fff; 
+                        color: #333; 
+                        font-size: 14px; 
+                        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); 
+                        cursor: default;
+                    ">
+                        <?php echo htmlspecialchars($desg); ?>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+
+
+
         <div class="input-group">
             <a>Academic Rank</a>
             <select name="position" id="position" disabled>
@@ -469,8 +561,11 @@ if ($role === 'Office Head') {
             <input type="tel" name="phone" id="phone" placeholder="Phone Number" value="<?php echo $phone; ?>" readonly>
         </div>
         <input type="file" name="profile_picture" id="profile_picture" onchange="readURL(this);" disabled>
-        <input type="button" id="edit-btn" value="Edit" onclick="enableEditing()">
-        <input type="submit" id="save-btn" value="Save" style="display:none;">
+        <input type="button" id="edit-btn" value="Edit" onclick="enableEditing()" >
+        <div>
+            <input type="button" id="cancel-edit-btn" value="Cancel" onclick="disableEditing()" style="display: none;">
+            <input type="submit" id="save-btn" value="Save" style="display:none;">
+        </div>
 
     </form>
 
@@ -725,12 +820,24 @@ if ($role === 'Office Head') {
 
             var formData = new FormData(event.target);
 
+            // Log each key-value pair
+            for (let [key, value] of formData.entries()) {
+                console.log(key + ': ' + value);
+            }
+
             var xhr = new XMLHttpRequest();
             xhr.open('POST', '../forall/profile.php', true);
 
             xhr.onload = function() {
                 var notification = document.getElementById('notification');
                 if (xhr.status === 200) {
+                    
+                    // Edited by Rex ------------------------------------------
+
+                    console.log(xhr.response);
+                    // return
+
+                    //  -------------------------------------------------------
                     notification.textContent = 'Profile Successfully Updated!';
                     notification.style.backgroundColor = '#28a745'; // Green background
                     notification.style.color = 'white';
@@ -799,6 +906,14 @@ if ($role === 'Office Head') {
     }
 
     function enableEditing() {
+
+        // Rex
+        // Hide view-field designations
+        document.getElementById('edit-designation-field').style.display = 'block';
+        document.getElementById('view-designation-field').style.display = 'none';
+        document.getElementById('cancel-edit-btn').style.display = 'inline-block';
+        //
+
         var fields = document.querySelectorAll('#profile-form input[type="text"], #profile-form input[type="email"], #profile-form input[type="tel"], #profile-form input[type="file"], #profile-form select');
         fields.forEach(function(field) {
             if (field.id !== 'idnumber' && field.id !== 'college' && field.id !== 'role') {
@@ -811,18 +926,26 @@ if ($role === 'Office Head') {
         });
 
         // Handle the designation toggle
-        var designationText = document.getElementById('designation_text');
-        var designationSelect = document.getElementById('designation');
+        // var designationText = document.getElementById('designation_text');
+        // var designationSelect = document.getElementById('designation');
 
-        designationText.style.display = 'none'; // Hide text input
-        designationSelect.style.display = 'block'; // Show select dropdown
-        designationSelect.removeAttribute('disabled'); // Enable the select dropdown
+        // designationText.style.display = 'none'; // Hide text input
+        // designationSelect.style.display = 'block'; // Show select dropdown
+        // designationSelect.removeAttribute('disabled'); // Enable the select dropdown
 
         document.getElementById('edit-btn').style.display = 'none';
         document.getElementById('save-btn').style.display = 'inline-block';
     }
 
     function disableEditing() {
+
+        // Rex
+        // Hide Edit-field designations
+        document.getElementById('edit-designation-field').style.display = 'none';
+        document.getElementById('view-designation-field').style.display = 'block';
+        document.getElementById('cancel-edit-btn').style.display = 'none';
+        //
+
         var fields = document.querySelectorAll('#profile-form input[type="text"], #profile-form input[type="email"], #profile-form input[type="tel"], #profile-form input[type="file"], #profile-form select');
         fields.forEach(function(field) {
             field.setAttribute('readonly', true);
@@ -830,12 +953,12 @@ if ($role === 'Office Head') {
         });
 
         // Handle the designation toggle back
-        var designationText = document.getElementById('designation_text');
-        var designationSelect = document.getElementById('designation');
+        // var designationText = document.getElementById('designation_text');
+        // var designationSelect = document.getElementById('designation');
 
-        designationSelect.style.display = 'none'; // Hide select dropdown
-        designationText.style.display = 'block'; // Show text input
-        designationText.value = designationSelect.options[designationSelect.selectedIndex].text; // Set the input value to the selected option
+        // designationSelect.style.display = 'none'; // Hide select dropdown
+        // designationText.style.display = 'block'; // Show text input
+        // designationText.value = designationSelect.options[designationSelect.selectedIndex].text; // Set the input value to the selected option
 
         document.getElementById('edit-btn').style.display = 'inline-block';
         document.getElementById('save-btn').style.display = 'none';
@@ -843,7 +966,7 @@ if ($role === 'Office Head') {
 
     function toggleFieldsBasedOnRole() {
         var role = '<?php echo $role; ?>'; // Get the role from PHP
-        var designationField = document.getElementById('designation');
+        // var designationField = document.getElementById('designation');
         var positionField = document.getElementById('position');
         // var gmailField = document.getElementById('gmail');
         var phoneField = document.getElementById('phone');
@@ -853,15 +976,15 @@ if ($role === 'Office Head') {
 
         // Check the role and toggle visibility accordingly
         if (role === 'Office Head') {
-            designationField.parentElement.style.display = 'block'; // Hide designation field
+            // designationField.parentElement.style.display = 'block'; // Hide designation field
             positionField.parentElement.style.display = 'none'; // Hide position field
             // gmailField.parentElement.style.display = 'block'; // Show email field
         } else if (role === 'College President' || role === 'VPAAQA') {
-            designationField.parentElement.style.display = 'none'; // Hide designation field
+            // designationField.parentElement.style.display = 'none'; // Hide designation field
             positionField.parentElement.style.display = 'none'; // Hide position field
             // gmailField.parentElement.style.display = 'block'; // Show email field
         } else {
-            designationField.parentElement.style.display = 'block'; // Show designation field
+            // designationField.parentElement.style.display = 'block'; // Show designation field
             positionField.parentElement.style.display = 'block'; // Show position field
             // gmailField.parentElement.style.display = 'block'; // Show email field
         }
