@@ -225,6 +225,11 @@ html, body {
         <img src="../iconswhite/notification.svg" alt="Reports Icon">
         Reports
     </button>
+    <button onclick="window.location.href='../feature_experiment/reports/personel_performance_report.php?id=<?php echo $_SESSION['idnumber']?>';" class="nav-link">
+        <img src="../iconswhite/notification.svg" alt="Reports Icon">
+        Reports
+    </button>
+
     <form method="post" id="logoutForm">
         <button type="button" onclick="showLogoutModal()" class="nav-link">
             <img src="../iconswhite/logout.svg" alt="Logout Icon">

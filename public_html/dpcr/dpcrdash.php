@@ -142,6 +142,10 @@ if (isset($_POST['logout'])) {
         <img src="../iconswhite/notification.svg" alt="Reports Icon">
         Reports
     </button>
+    <button onclick="window.open('../feature_experiment/reports/college_general_performance_report.php', '_blank')" class="nav-link">
+        <img src="../iconswhite/notification.svg" alt="Reports Icon">
+        Reports
+    </button>
     <form method="post" id="logoutForm">
         <button type="button" onclick="showLogoutModal()" class="nav-link">
             <img src="../iconswhite/logout.svg" alt="Logout Icon">
