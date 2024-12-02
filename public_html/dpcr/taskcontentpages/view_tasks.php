@@ -1198,8 +1198,12 @@ $conn->close();
                     // Using the fetch API to call PHP script
                     fetch('../../feature_experiment/notify_users/includes/send_email_async.php', {
                         method: 'POST', // or 'POST' if you're sending data
-                        body: JSON.stringify({ message: data.message }),
-                    });
+                        body: JSON.stringify({ message: data.message, user_id: element }),
+                    }) 
+                    // .then(response => response.text())
+                    // .then(data => { 
+                    //     console.log(data);
+                    // })
                     
                 });
 
