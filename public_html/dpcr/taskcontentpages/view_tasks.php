@@ -728,7 +728,34 @@ $conn->close();
             <td style="padding: 0; text-align: center;"><?php echo htmlspecialchars($task['efficiency']); ?></td>
             <td style="padding: 0; text-align: center;"><?php echo htmlspecialchars($task['timeliness']); ?></td>
             <td style="padding: 0; text-align: center;"><?php echo htmlspecialchars($task['average']); ?></td>
-            <td style="padding: 10px; border: 1px solid #ddd;"><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
+            
+            <?php 
+                $owners = explode('<br>', $task['owner']);
+                $owner_ids = []; 
+
+                if (!empty($owners[0])) { 
+                    foreach ($owners as $owner) {
+                        list($owner_name, $assignuser_id) = explode(',', $owner);
+                        $owner_id = trim($assignuser_id);
+                        $owner_ids[] = $owner_id;
+                    }
+                }
+
+                // Encode owner IDs for safe inclusion in HTML
+                $encodedOwnerIds = htmlspecialchars(json_encode($owner_ids), ENT_QUOTES, 'UTF-8');
+            ?>
+
+            <td style="padding: 10px; border: 1px solid #ddd;">
+            <button class="edit-btn" 
+                    onclick="editRow(this)" 
+                    data-owner-ids='<?php echo $encodedOwnerIds; ?>' 
+                    data-task-name="<?php echo htmlspecialchars($task_name, ENT_QUOTES, 'UTF-8'); ?>" 
+                    data-task-description="<?php echo htmlspecialchars($description, ENT_QUOTES, 'UTF-8'); ?>">
+                Edit
+            </button>
+            </td>
+
+
             <td><?php echo htmlspecialchars(date('M/d/Y', strtotime($task['due_date']))); ?></td>
         </tr>
         <?php endfor; ?>
@@ -829,7 +856,33 @@ $conn->close();
             <td style="padding: 0; text-align: center;"><?php echo htmlspecialchars($task['efficiency']); ?></td>
             <td style="padding: 0; text-align: center;"><?php echo htmlspecialchars($task['timeliness']); ?></td>
             <td style="padding: 0; text-align: center;"><?php echo htmlspecialchars($task['average']); ?></td>
-            <td style="padding: 10px; border: 1px solid #ddd;"><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
+
+            <?php 
+                $owners = explode('<br>', $task['owner']);
+                $owner_ids = []; 
+
+                if (!empty($owners[0])) { 
+                    foreach ($owners as $owner) {
+                        list($owner_name, $assignuser_id) = explode(',', $owner);
+                        $owner_id = trim($assignuser_id);
+                        $owner_ids[] = $owner_id;
+                    }
+                }
+
+                // Encode owner IDs for safe inclusion in HTML
+                $encodedOwnerIds = htmlspecialchars(json_encode($owner_ids), ENT_QUOTES, 'UTF-8');
+            ?>
+
+            <td style="padding: 10px; border: 1px solid #ddd;">
+            <button class="edit-btn" 
+                    onclick="editRow(this)" 
+                    data-owner-ids='<?php echo $encodedOwnerIds; ?>' 
+                    data-task-name="<?php echo htmlspecialchars($task_name, ENT_QUOTES, 'UTF-8'); ?>" 
+                    data-task-description="<?php echo htmlspecialchars($description, ENT_QUOTES, 'UTF-8'); ?>">
+                Edit
+            </button>
+            </td>
+
             <td><?php echo htmlspecialchars(date('M/d/Y', strtotime($task['due_date']))); ?></td>
         </tr>
         <?php endforeach; ?>
@@ -930,7 +983,32 @@ $conn->close();
                 <td style="padding: 0; text-align: center;"><?php echo htmlspecialchars($task['efficiency']); ?></td>
                 <td style="padding: 0; text-align: center;"><?php echo htmlspecialchars($task['timeliness']); ?></td>
                 <td style="padding: 0; text-align: center;"><?php echo htmlspecialchars($task['average']); ?></td>
-                <td style="padding: 10px; border: 1px solid #ddd;"><button class="edit-btn" onclick="editRow(this)">Edit</button></td>
+                <?php 
+                    $owners = explode('<br>', $task['owner']);
+                    $owner_ids = []; 
+
+                    if (!empty($owners[0])) { 
+                        foreach ($owners as $owner) {
+                            list($owner_name, $assignuser_id) = explode(',', $owner);
+                            $owner_id = trim($assignuser_id);
+                            $owner_ids[] = $owner_id;
+                        }
+                    }
+
+                    // Encode owner IDs for safe inclusion in HTML
+                    $encodedOwnerIds = htmlspecialchars(json_encode($owner_ids), ENT_QUOTES, 'UTF-8');
+                ?>
+
+                <td style="padding: 10px; border: 1px solid #ddd;">
+                <button class="edit-btn" 
+                        onclick="editRow(this)" 
+                        data-owner-ids='<?php echo $encodedOwnerIds; ?>' 
+                        data-task-name="<?php echo htmlspecialchars($task_name, ENT_QUOTES, 'UTF-8'); ?>" 
+                        data-task-description="<?php echo htmlspecialchars($description, ENT_QUOTES, 'UTF-8'); ?>">
+                    Edit
+                </button>
+                </td>
+
                 <td><?php echo htmlspecialchars(date('M/d/Y', strtotime($task['due_date']))); ?></td>
             </tr>
             <?php endforeach; ?>
@@ -1047,11 +1125,18 @@ $conn->close();
 </div>
 <script>
     function editRow(button) {
+
+        const ownerIds = JSON.parse(button.getAttribute('data-owner-ids'));
+        const taskName = button.getAttribute('data-task-name');
+        const taskDescription = button.getAttribute('data-task-description');
+        
+
         console.log('Edit button clicked'); // Debugging statement
         const row = button.closest('tr');
         const cells = row.querySelectorAll('td');
 
         cells.forEach((cell, index) => {
+ 
             if (index >= 5 && index <= 7) { // Columns for Quality, Efficiency, Timeliness (not Average)
                 if (cell.querySelector('input')) return; // Skip if already in edit mode
 
@@ -1067,6 +1152,11 @@ $conn->close();
     }
 
     function saveRow(button) {
+
+        const ownerIds = JSON.parse(button.getAttribute('data-owner-ids'));
+        const taskName = button.getAttribute('data-task-name');
+        const taskDescription = button.getAttribute('data-task-description');
+
         console.log('Save button clicked'); // Debugging statement
         const row = button.closest('tr');
         const cells = row.querySelectorAll('td');
@@ -1089,11 +1179,30 @@ $conn->close();
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ taskId, ...updates }), // Include taskId in the request
+
+            // Rex: added users to be notified...
+            body: JSON.stringify({ 
+                taskId, 
+                ...updates,
+                users: ownerIds,
+                taskName: taskName,
+                taskDescription: taskDescription,
+            }), // Include taskId in the request
         })
         .then(response => response.json())
         .then(data => {
+            console.log(data);
             if (data.success) {
+
+                ownerIds.forEach(element => {
+                    // Using the fetch API to call PHP script
+                    fetch('../../feature_experiment/notify_users/includes/send_email_async.php', {
+                        method: 'POST', // or 'POST' if you're sending data
+                        body: JSON.stringify({ message: data.message }),
+                    });
+                    
+                });
+
                 alert('Rate updated successfully!');
                 button.textContent = 'Edit';
                 // Save the scroll position before reloading
