@@ -708,6 +708,8 @@ $conn->close();
                             data-semester-id="' . $semester_id . '" 
                             data-task-type="strategic" 
                             data-owner-name="' . htmlspecialchars($owner_name) . '" 
+                            data-task-name="' . htmlspecialchars($task['task_name']) . '"
+                            data-task-description="' . htmlspecialchars($task['description']) . '"
                             style="cursor:pointer;"></i><br>';
                     }
                 } else {
@@ -836,6 +838,8 @@ $conn->close();
                         data-semester-id="' . $semester_id . '" 
                         data-task-type="core" 
                         data-owner-name="' . htmlspecialchars($owner_name) . '" 
+                        data-task-name="' . htmlspecialchars($task['task_name']) . '"
+                        data-task-description="' . htmlspecialchars($task['description']) . '"
                         style="cursor:pointer;"></i><br>';
                     }
                 } else {
@@ -963,6 +967,8 @@ $conn->close();
                             data-semester-id="' . $semester_id . '" 
                             data-task-type="support" 
                             data-owner-name="' . htmlspecialchars($owner_name) . '" 
+                            data-task-name="' . htmlspecialchars($task['task_name']) . '"
+                            data-task-description="' . htmlspecialchars($task['description']) . '"
                             style="cursor:pointer;"></i><br>';
                         }
                     } else {
@@ -1071,6 +1077,10 @@ $conn->close();
             var semesterId = $(this).data('semester-id'); // Get semester_id
             var taskType = $(this).data('task-type'); // Get task_type
             var ownerName = $(this).data('owner-name'); // Get owner's full name
+            var taskName = $(this).data('task-name');
+            var taskDescription = $(this).data('task-description');
+
+            console.log(taskDescription);
             
             // Load relevant files into the modal
             $('#modalBody').html('Loading files...'); // Show loading message
@@ -1083,7 +1093,9 @@ $conn->close();
                     task_id: taskId,
                     owner_id: ownerId,
                     semester_id: semesterId, // Send semester_id
-                    task_type: taskType // Send task_type
+                    task_type: taskType, // Send task_type
+                    task_name: taskName, 
+                    task_description: taskDescription, 
                 },
                 success: function(data) {
                     // Create a table structure

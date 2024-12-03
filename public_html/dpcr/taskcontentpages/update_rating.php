@@ -88,7 +88,7 @@ $conn->close();
 // Rex - generates message for the notification
 function generate_notification_message($task_id, $task_type, $quality, $efficiency, $timeliness, $conn, $users, $task_name, $task_description) {
     // Initialize the notification message
-    $notification_message = "Dean has made changes. The updates are as follows: ";
+    $notification_message = "Dean rated your assigned task (DPCR): <br>";
 
     // Determine which task table to query based on task type
     $task_table = '';
@@ -120,13 +120,13 @@ function generate_notification_message($task_id, $task_type, $quality, $efficien
 
     // Check if each attribute has changed and add it to the message
     if ($current_quality != $quality) {
-        $changed_attributes[] = "quality: from {$current_quality} to {$quality}";
+        $changed_attributes[] = "<br>Quality: from {$current_quality} to {$quality}";
     }
     if ($current_efficiency != $efficiency) {
-        $changed_attributes[] = "efficiency: from {$current_efficiency} to {$efficiency}";
+        $changed_attributes[] = "<br>Efficiency: from {$current_efficiency} to {$efficiency}";
     }
     if ($current_timeliness != $timeliness) {
-        $changed_attributes[] = "timeliness: from {$current_timeliness} to {$timeliness}";
+        $changed_attributes[] = "<br>Timeliness: from {$current_timeliness} to {$timeliness}";
     }
 
     // If there are any changes, append them to the notification message

@@ -27,10 +27,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         if ($user) {
             $message = $data['message'];
-            // echo $user['gmail'];
+            echo $user['gmail'];
             sendEmail($user['gmail'], $data['message']);
         } else {
-            // echo "No user found with the provided ID.";
+            echo $data['user_id'];
         }
 
 
